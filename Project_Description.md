@@ -20,3 +20,15 @@ CookRoo
 - Share recipes on social media
 - Advanced search options such as protein/carbs/calories
 - Host ‘Recipe of the Week’
+
+TO DO:
+- Authentication
+- Conditional rendering and features (can only edit self recipes)
+- CSS
+- filtering
+- photo upload
+- Details to be rendered like a blog
+- test cases
+- Deploy on AWS
+- Create VPC
+- Presentation of work
