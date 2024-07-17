@@ -22,7 +22,6 @@ CookRoo
 - Host ‘Recipe of the Week’
 
 TO DO:
-- Authentication
 - Conditional rendering and features (can only edit self recipes)
 - CSS
 - filtering

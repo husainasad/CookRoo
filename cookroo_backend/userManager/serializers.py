@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from recipeManager.serializers import RecipeSerializer
 from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserSerializer(serializers.ModelSerializer):
     # recipes = RecipeSerializer(many=True, read_only=True)

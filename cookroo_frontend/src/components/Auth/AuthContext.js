@@ -1,42 +1,51 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import {jwtDecode} from 'jwt-decode';
+// export const isAuthenticated = () => {
+//     const token = localStorage.getItem('access_token');
+//     return !!token;
+// };
 
-// Create AuthContext
-const AuthContext = createContext();
+// export const logout = () => {
+//     localStorage.removeItem('access_token');
+//     localStorage.removeItem('refresh_token');
+// };
 
-// AuthProvider Component
-export const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(localStorage.getItem('access') || null);
+// export const setTokens = (accessToken, refreshToken) => {
+//     localStorage.setItem('access_token', accessToken);
+//     localStorage.setItem('refresh_token', refreshToken);
+// };
+
+import React, { createContext, useState, useEffect } from 'react';
+
+export const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+
+    const login = (accessToken, refreshToken) => {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        setIsAuthenticated(true);
+    };
+
+    const logout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setIsAuthenticated(false);
+    };
 
     useEffect(() => {
-        if (authToken) {
-            const decodedToken = jwtDecode(authToken);
-            if (decodedToken.exp * 1000 < Date.now()) {
-                setAuthToken(null);
-                localStorage.removeItem('access');
-                localStorage.removeItem('refresh');
-            }
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            setIsAuthenticated(true);
+        } else {
+            setIsAuthenticated(false);
         }
-    }, [authToken]);
-
-    const saveAuthToken = (token) => {
-        localStorage.setItem('access', token);
-        setAuthToken(token);
-    };
-
-    const clearAuthToken = () => {
-        localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
-        setAuthToken(null);
-    };
+    }, []);
 
     return (
-        <AuthContext.Provider value={{ authToken, setAuthToken: saveAuthToken, clearAuthToken }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+export default AuthProvider;

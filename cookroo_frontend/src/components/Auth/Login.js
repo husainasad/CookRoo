@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import { login, setAuthToken } from '../../Api';
+import React, { useState, useContext } from 'react';
+import { loginUser } from '../../Api';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './../Auth/AuthContext';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await login({ username, password });
-            const { access, refresh } = response.data;
+            const response = await loginUser({ username, password });
 
-            localStorage.setItem('access', access);
-            localStorage.setItem('refresh', refresh);
-            setAuthToken(access);
+            login(response.data.access, response.data.refresh);
 
-            onLogin();
             navigate('/');
         } catch (error) {
             console.error('Login failed:', error);

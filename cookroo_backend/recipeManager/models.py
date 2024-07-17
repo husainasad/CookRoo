@@ -29,11 +29,11 @@ class Recipe(models.Model):
 
     # author = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='dinner')
     ingredients = models.ManyToManyField(Ingredient)
     cooking_duration = models.PositiveIntegerField(help_text="Duration in minutes")
-    dietary_preferences = models.CharField(max_length=50, choices=DIETARY_CHOICES, blank=True, null=True)
-    difficulty_level = models.CharField(max_length=50, choices=DIFFICULTY_CHOICES)
+    dietary_preferences = models.CharField(max_length=50, choices=DIETARY_CHOICES, default='vegan')
+    difficulty_level = models.CharField(max_length=50, choices=DIFFICULTY_CHOICES, default='easy')
     instructions = models.TextField()
     # photo = models.ImageField(upload_to='recipe_photos/', blank=True, null=True)
 

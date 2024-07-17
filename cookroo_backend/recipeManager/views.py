@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from recipeManager.models import Ingredient, Recipe
@@ -22,6 +23,7 @@ def cleanup_ingredients(ingredients, recipe):
             recipe.ingredients.remove(ingredient)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_all_recipes(request):
     try:
         recipes = Recipe.objects.all()
@@ -31,6 +33,7 @@ def get_all_recipes(request):
         return Response({'detail': f'Error fetching recipes: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_recipe_by_id(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     try:
@@ -84,6 +87,7 @@ def delete_recipe_by_id(request, pk):
         return Response({'detail': f'Error deleting recipe: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_all_ingredients(request):
     try:
         ingredients = Ingredient.objects.all()
@@ -93,6 +97,7 @@ def get_all_ingredients(request):
         return Response({'detail': f'Error fetching ingredients: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_ingredient_by_id(request, pk):
     ingredient = get_object_or_404(Ingredient, pk=pk)
     try:

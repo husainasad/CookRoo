@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getRecipes } from '../../Api';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { CATEGORY_CHOICES, DIETARY_CHOICES, DIFFICULTY_CHOICES, ChoiceMapper } from './Choices';
 
 const RecipeList = () => {
     const [recipes, setRecipes] = useState([]);
@@ -22,9 +22,6 @@ const RecipeList = () => {
 
     return (
         <div>
-            <nav>
-                <button onClick={() => navigate('/add-recipe')}>Add Recipe</button>
-            </nav>
             <h2>Recipes</h2>
             <table border="1">
                 <thead>
@@ -41,11 +38,11 @@ const RecipeList = () => {
                     {recipes.map((recipe) => (
                         <tr key={recipe.id}>
                             <td><Link to={`/recipe/${recipe.id}`}>{recipe.name}</Link></td>
-                            <td>{recipe.category}</td>
+                            <td><ChoiceMapper value={recipe.category} choices={CATEGORY_CHOICES} /></td>
                             <td>{recipe.ingredients.map(ingredient => ingredient.name).join(', ')}</td>
                             <td>{recipe.cooking_duration}</td>
-                            <td>{recipe.dietary_preferences}</td>
-                            <td>{recipe.difficulty_level}</td>
+                            <td><ChoiceMapper value={recipe.dietary_preferences} choices={DIETARY_CHOICES} /></td>
+                            <td><ChoiceMapper value={recipe.difficulty_level} choices={DIFFICULTY_CHOICES} /></td>
                         </tr>
                     ))}
                 </tbody>

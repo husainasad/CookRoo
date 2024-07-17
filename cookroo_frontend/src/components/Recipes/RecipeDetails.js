@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getRecipe, deleteRecipe } from '../../Api';
 import { useParams, useNavigate } from 'react-router-dom';
+import { CATEGORY_CHOICES, DIETARY_CHOICES, DIFFICULTY_CHOICES, ChoiceMapper } from './Choices';
 
 const RecipeDetails = () => {
     const { id } = useParams();
@@ -51,7 +52,7 @@ const RecipeDetails = () => {
                 <tbody>
                     <tr>
                         <td>{recipe.name}</td>
-                        <td>{recipe.category}</td>
+                        <td><ChoiceMapper value={recipe.category} choices={CATEGORY_CHOICES} /></td>
                         <td>
                             {recipe.ingredients && recipe.ingredients.length > 0
                                 ? recipe.ingredients.map((ingredient, index) => (
@@ -63,13 +64,12 @@ const RecipeDetails = () => {
                                 : 'No ingredients listed'}
                         </td>
                         <td>{recipe.cooking_duration}</td>
-                        <td>{recipe.dietary_preferences}</td>
-                        <td>{recipe.difficulty_level}</td>
+                        <td><ChoiceMapper value={recipe.dietary_preferences} choices={DIETARY_CHOICES} /></td>
+                        <td><ChoiceMapper value={recipe.difficulty_level} choices={DIFFICULTY_CHOICES} /></td>
                         <td>{recipe.instructions}</td>
                     </tr>
                 </tbody>
             </table>
-            <button onClick={() => navigate('/')}>All Recipes</button>
             <button onClick={() => navigate(`/recipe/${id}/edit`)}>Edit Recipe</button>
             <button onClick={() => handleDelete(id)}>Delete Recipe</button>
         </div>

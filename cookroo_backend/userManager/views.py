@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from userManager.serializers import UserSerializer
+from django.shortcuts import get_object_or_404
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,14 +23,16 @@ def user_list(request):
 @api_view(['GET'])
 def user_detail(request, pk):
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = UserSerializer(user)
-    return Response(serializer.data)
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+    except Exception as e:
+        logger.error(f"Error fetching user details: {e}")
+        return Response({'detail': 'Error fetching user details'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
