@@ -24,8 +24,8 @@ CookRoo
 TO DO:
 - CSS
 - filtering
+- protect unused apis
 - photo upload
-- Details to be rendered like a blog
 - test cases
 - Deploy on AWS
 - Create VPC
