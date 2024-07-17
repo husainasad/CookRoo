@@ -6,11 +6,13 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from userManager.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAdminUser
 import logging
 
 logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def user_list(request):
     try:
         users = User.objects.all()
@@ -22,8 +24,10 @@ def user_list(request):
 
 @api_view(['GET'])
 def user_detail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.user != user and not request.user.is_staff:
+        return Response({'detail': 'You do not have permission to view this user.'}, status=status.HTTP_403_FORBIDDEN)
     try:
-        user = get_object_or_404(User, pk=pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
     except Exception as e:

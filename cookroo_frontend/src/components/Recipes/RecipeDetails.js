@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { getRecipe, deleteRecipe } from '../../Api';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { CATEGORY_CHOICES, DIETARY_CHOICES, DIFFICULTY_CHOICES, ChoiceMapper } from './Choices';
 
 const RecipeDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { isPersonal } = location.state || {};
 
     const [recipe, setRecipe] = useState([]);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchRecipes = async () => {
@@ -17,7 +18,6 @@ const RecipeDetails = () => {
                 setRecipe(response.data);
             } catch (error) {
                 console.error('Failed to fetch recipes:', error);
-                setError('Failed to fetch recipe details.');
             }
         };
 
@@ -36,7 +36,7 @@ const RecipeDetails = () => {
 
     return (
         <div>
-            <h2>Recipes</h2>
+            <h2>Recipes Details</h2>
             <table border="1">
                 <thead>
                     <tr>
@@ -70,8 +70,12 @@ const RecipeDetails = () => {
                     </tr>
                 </tbody>
             </table>
-            <button onClick={() => navigate(`/recipe/${id}/edit`)}>Edit Recipe</button>
-            <button onClick={() => handleDelete(id)}>Delete Recipe</button>
+            {isPersonal && (
+                <>
+                    <button onClick={() => navigate(`/recipe/${id}/edit`)}>Edit Recipe</button>
+                    <button onClick={handleDelete}>Delete Recipe</button>
+                </>
+            )}
         </div>
     );
 };

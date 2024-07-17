@@ -6,6 +6,7 @@ from rest_framework import status
 from recipeManager.models import Ingredient, Recipe
 from recipeManager.serializers import IngredientSerializer, RecipeSerializer
 from django.db import transaction
+from recipeManager.permissions import IsOwnerOrReadOnly
 
 def process_ingredients(input_ingredients):
     ingredient_names = [name.strip() for name in input_ingredients.split(',') if name.strip()]
@@ -42,23 +43,56 @@ def get_recipe_by_id(request, pk):
     except Exception as e:
         return Response({'detail': f'Error fetching recipe by id: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_personal_recipes(request):
+    try:
+        if request.user.is_authenticated:
+            recipes = Recipe.objects.filter(user=request.user)
+        else:
+            recipes = Recipe.objects.none()
+            
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'detail': f'Error fetching recipes: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_public_recipes(request):
+    try:
+        if request.user.is_authenticated:
+            recipes = Recipe.objects.exclude(user=request.user)
+        else:
+            recipes = Recipe.objects.all()
+
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'detail': f'Error fetching recipes: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
 def add_new_recipe(request):
     serializer = RecipeSerializer(data=request.data)
     if serializer.is_valid():
         try:
             with transaction.atomic():
-                recipe = serializer.save()
+                recipe = serializer.save(user=request.user)
                 ingredients = process_ingredients(request.data.get('ingredients', ''))
                 recipe.ingredients.set(ingredients)
                 return Response(RecipeSerializer(recipe).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'detail': f'Error adding recipe: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
+@permission_classes([IsOwnerOrReadOnly])
 def edit_recipe_by_id(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
+    if recipe.user != request.user:
+        return Response({'detail': 'You do not have permission to edit this recipe.'}, status=status.HTTP_403_FORBIDDEN)
+    
     serializer = RecipeSerializer(recipe, data=request.data, partial=True)
     if serializer.is_valid():
         try:
@@ -75,8 +109,12 @@ def edit_recipe_by_id(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@permission_classes([IsOwnerOrReadOnly])
 def delete_recipe_by_id(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
+    if recipe.user != request.user:
+        return Response({'detail': 'You do not have permission to delete this recipe.'}, status=status.HTTP_403_FORBIDDEN)
+    
     try:
         with transaction.atomic():
             associated_ingredients = recipe.ingredients.all()
@@ -119,8 +157,12 @@ def add_new_ingredient(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
+@permission_classes([IsOwnerOrReadOnly])
 def edit_ingredient_by_id(request, pk):
     ingredient = get_object_or_404(Ingredient, pk=pk)
+    if ingredient.user != request.user:
+        return Response({'detail': 'You do not have permission to edit this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
+    
     serializer = IngredientSerializer(ingredient, data=request.data, partial=True)
     if serializer.is_valid():
         try:
@@ -132,8 +174,12 @@ def edit_ingredient_by_id(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@permission_classes([IsOwnerOrReadOnly])
 def delete_ingredient_by_id(request, pk):
     ingredient = get_object_or_404(Ingredient, pk=pk)
+    if ingredient.user != request.user:
+        return Response({'detail': 'You do not have permission to delete this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
+    
     try:
         with transaction.atomic():
             ingredient.delete()

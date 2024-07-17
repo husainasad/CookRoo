@@ -27,7 +27,7 @@ class Recipe(models.Model):
         ('hard', 'Hard'),
     ]
 
-    # author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='dinner')
     ingredients = models.ManyToManyField(Ingredient)

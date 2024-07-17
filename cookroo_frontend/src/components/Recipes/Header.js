@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from './../Auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Auth/AuthContext';
 
 const Navbar = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
@@ -16,6 +16,7 @@ const Navbar = () => {
             <button onClick={() => navigate('/')}>All Recipes</button>
             {isAuthenticated ? (
                 <>
+                    <button onClick={() => navigate('/personal-recipes')}>Personal Recipes</button>
                     <button onClick={() => navigate('/add-recipe')}>Add Recipe</button>
                     <button onClick={handleLogout}>Logout</button>
                 </>

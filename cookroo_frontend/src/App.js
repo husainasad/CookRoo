@@ -2,18 +2,20 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
-import RecipeList from './components/Recipes/RecipeList';
+import PublicRecipeList from './components/Recipes/PublicRecipeList';
+import PersonalRecipeList from './components/Recipes/PersonalRecipeList';
 import AddRecipe from './components/Recipes/AddRecipe';
 import RecipeDetails from './components/Recipes/RecipeDetails';
 import EditRecipe from './components/Recipes/EditRecipe';
-import Navbar from './components/Recipes/Navbar';
+import Navbar from './components/Recipes/Header';
 import AuthProvider from './components/Auth/AuthContext';
 
 const App = () => (
     <AuthProvider>
         <Navbar />
         <Routes>
-            <Route path="/" element={<RecipeList />} />
+            <Route path="/" element={<PublicRecipeList />} />
+            <Route path="/personal-recipes" element={<PersonalRecipeList />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/add-recipe" element={<AddRecipe />} />

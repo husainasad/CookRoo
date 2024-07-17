@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { getRecipes } from '../../Api';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CATEGORY_CHOICES, DIETARY_CHOICES, DIFFICULTY_CHOICES, ChoiceMapper } from './Choices';
 
-const RecipeList = () => {
+const RecipeList = ({fetchRecipes, isPersonal}) => {
     const [recipes, setRecipes] = useState([]);
-    const navigate = useNavigate()
 
     useEffect(() => {
-        const fetchRecipes = async () => {
+        const fetchRecipeData = async () => {
             try {
-                const response = await getRecipes();
+                const response = await fetchRecipes();
                 setRecipes(response.data);
             } catch (error) {
                 console.error('Failed to fetch recipes:', error);
             }
         };
 
-        fetchRecipes();
-    }, []);
+        fetchRecipeData();
+    }, [fetchRecipes]);
 
     return (
         <div>
-            <h2>Recipes</h2>
+            <h2>{isPersonal ? 'Personal Recipes' : 'Public Recipes'}</h2>
             <table border="1">
                 <thead>
                     <tr>
@@ -37,7 +35,7 @@ const RecipeList = () => {
                 <tbody>
                     {recipes.map((recipe) => (
                         <tr key={recipe.id}>
-                            <td><Link to={`/recipe/${recipe.id}`}>{recipe.name}</Link></td>
+                            <td><Link to={`/recipe/${recipe.id}`} state={{ isPersonal }}>{recipe.name}</Link></td>
                             <td><ChoiceMapper value={recipe.category} choices={CATEGORY_CHOICES} /></td>
                             <td>{recipe.ingredients.map(ingredient => ingredient.name).join(', ')}</td>
                             <td>{recipe.cooking_duration}</td>

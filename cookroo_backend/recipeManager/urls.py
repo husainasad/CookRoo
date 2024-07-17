@@ -3,6 +3,8 @@ from recipeManager import views
 
 urlpatterns = [
     path('recipes/', views.get_all_recipes, name='get_all_recipes'),
+    path('recipes/public/', views.get_public_recipes, name='get_public_recipes'),
+    path('recipes/personal/', views.get_personal_recipes, name='get_personal_recipes'),
     path('recipes/add/', views.add_new_recipe, name='add_new_recipe'),
     path('recipes/<int:pk>/', views.get_recipe_by_id, name='get_recipe_by_id'),
     path('recipes/<int:pk>/edit/', views.edit_recipe_by_id, name='edit_recipe_by_id'),

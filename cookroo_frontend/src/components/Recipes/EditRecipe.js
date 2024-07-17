@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getRecipe, editRecipe } from '../../Api';
 import { useParams, useNavigate } from 'react-router-dom';
-import RecipeForm from './RecipeForm'; // Adjust the import path as needed
+import RecipeForm from './RecipeForm';
 
 const EditRecipe = () => {
     const { id } = useParams();
