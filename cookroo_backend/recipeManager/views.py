@@ -83,7 +83,6 @@ def add_new_recipe(request):
                 return Response(RecipeSerializer(recipe).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'detail': f'Error adding recipe: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])

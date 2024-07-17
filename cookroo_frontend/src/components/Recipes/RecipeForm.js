@@ -59,7 +59,7 @@ const RecipeForm = ({ initialData, onSubmit, onCancel }) => {
                             required
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
-                            {Object.entries(CATEGORY_CHOICES).map(([value, label]) => (
+                            {CATEGORY_CHOICES.map(({ value, label }) => (
                                 <option key={value} value={value}>{label}</option>
                             ))}
                         </select>
@@ -95,7 +95,7 @@ const RecipeForm = ({ initialData, onSubmit, onCancel }) => {
                             required
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
-                            {Object.entries(DIETARY_CHOICES).map(([value, label]) => (
+                            {DIETARY_CHOICES.map(({ value, label }) => (
                                 <option key={value} value={value}>{label}</option>
                             ))}
                         </select>
@@ -109,7 +109,7 @@ const RecipeForm = ({ initialData, onSubmit, onCancel }) => {
                             required
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
-                            {Object.entries(DIFFICULTY_CHOICES).map(([value, label]) => (
+                            {DIFFICULTY_CHOICES.map(({ value, label }) => (
                                 <option key={value} value={value}>{label}</option>
                             ))}
                         </select>
