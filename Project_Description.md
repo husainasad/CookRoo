@@ -22,8 +22,7 @@ CookRoo
 - Host ‘Recipe of the Week’
 
 TO DO:
-- CSS
-- filtering
+- searching
 - protect unused apis
 - photo upload
 - test cases
