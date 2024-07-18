@@ -29,13 +29,16 @@ class Recipe(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='dinner')
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='breakfast')
     ingredients = models.ManyToManyField(Ingredient)
     cooking_duration = models.PositiveIntegerField(help_text="Duration in minutes")
     dietary_preferences = models.CharField(max_length=50, choices=DIETARY_CHOICES, default='vegan')
     difficulty_level = models.CharField(max_length=50, choices=DIFFICULTY_CHOICES, default='easy')
     instructions = models.TextField()
     # photo = models.ImageField(upload_to='recipe_photos/', blank=True, null=True)
+
+    class Meta:
+        unique_together = ('user', 'name')
 
     def __str__(self):
         return self.name

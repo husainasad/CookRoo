@@ -7,9 +7,6 @@ from django.contrib.auth.models import User
 from userManager.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAdminUser
-import logging
-
-logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
@@ -19,7 +16,6 @@ def user_list(request):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
-        logger.error(f"Error fetching users: {e}")
         return Response({'detail': 'Error fetching users'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
@@ -31,7 +27,6 @@ def user_detail(request, pk):
         serializer = UserSerializer(user)
         return Response(serializer.data)
     except Exception as e:
-        logger.error(f"Error fetching user details: {e}")
         return Response({'detail': 'Error fetching user details'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -42,5 +37,4 @@ def register_user(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    logger.error("Validation errors:", serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

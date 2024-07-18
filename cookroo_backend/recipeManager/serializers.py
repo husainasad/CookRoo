@@ -9,7 +9,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True, read_only=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, required=False)
+    # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True, required=False)
+    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Recipe

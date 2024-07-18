@@ -123,65 +123,65 @@ def delete_recipe_by_id(request, pk):
     except Exception as e:
         return Response({'detail': f'Error deleting recipe: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_all_ingredients(request):
-    try:
-        ingredients = Ingredient.objects.all()
-        serializer = IngredientSerializer(ingredients, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'detail': f'Error fetching ingredients: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def get_all_ingredients(request):
+#     try:
+#         ingredients = Ingredient.objects.all()
+#         serializer = IngredientSerializer(ingredients, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         return Response({'detail': f'Error fetching ingredients: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_ingredient_by_id(request, pk):
-    ingredient = get_object_or_404(Ingredient, pk=pk)
-    try:
-        serializer = IngredientSerializer(ingredient)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'detail': f'Error fetching ingredient by id: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def get_ingredient_by_id(request, pk):
+#     ingredient = get_object_or_404(Ingredient, pk=pk)
+#     try:
+#         serializer = IngredientSerializer(ingredient)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         return Response({'detail': f'Error fetching ingredient by id: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
-def add_new_ingredient(request):
-    serializer = IngredientSerializer(data=request.data)
-    if serializer.is_valid():
-        try:
-            with transaction.atomic():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({'detail': f'Error adding ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def add_new_ingredient(request):
+#     serializer = IngredientSerializer(data=request.data)
+#     if serializer.is_valid():
+#         try:
+#             with transaction.atomic():
+#                 serializer.save()
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         except Exception as e:
+#             return Response({'detail': f'Error adding ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PUT'])
-@permission_classes([IsOwnerOrReadOnly])
-def edit_ingredient_by_id(request, pk):
-    ingredient = get_object_or_404(Ingredient, pk=pk)
-    if ingredient.user != request.user:
-        return Response({'detail': 'You do not have permission to edit this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
+# @api_view(['PUT'])
+# @permission_classes([IsOwnerOrReadOnly])
+# def edit_ingredient_by_id(request, pk):
+#     ingredient = get_object_or_404(Ingredient, pk=pk)
+#     if ingredient.user != request.user:
+#         return Response({'detail': 'You do not have permission to edit this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
     
-    serializer = IngredientSerializer(ingredient, data=request.data, partial=True)
-    if serializer.is_valid():
-        try:
-            with transaction.atomic():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'detail': f'Error editing ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     serializer = IngredientSerializer(ingredient, data=request.data, partial=True)
+#     if serializer.is_valid():
+#         try:
+#             with transaction.atomic():
+#                 serializer.save()
+#                 return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return Response({'detail': f'Error editing ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['DELETE'])
-@permission_classes([IsOwnerOrReadOnly])
-def delete_ingredient_by_id(request, pk):
-    ingredient = get_object_or_404(Ingredient, pk=pk)
-    if ingredient.user != request.user:
-        return Response({'detail': 'You do not have permission to delete this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
+# @api_view(['DELETE'])
+# @permission_classes([IsOwnerOrReadOnly])
+# def delete_ingredient_by_id(request, pk):
+#     ingredient = get_object_or_404(Ingredient, pk=pk)
+#     if ingredient.user != request.user:
+#         return Response({'detail': 'You do not have permission to delete this ingredient.'}, status=status.HTTP_403_FORBIDDEN)
     
-    try:
-        with transaction.atomic():
-            ingredient.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-    except Exception as e:
-        return Response({'detail': f'Error deleting ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     try:
+#         with transaction.atomic():
+#             ingredient.delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#     except Exception as e:
+#         return Response({'detail': f'Error deleting ingredient: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

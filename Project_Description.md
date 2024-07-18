@@ -22,10 +22,8 @@ CookRoo
 - Host ‘Recipe of the Week’
 
 TO DO:
-- searching
-- protect unused apis
-- photo upload
 - test cases
+- photo upload
 - Deploy on AWS
 - Create VPC
 - Presentation of work
