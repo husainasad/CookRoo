@@ -27,7 +27,8 @@
     - Inbound SSH 22 Source (Bastion SG) [Bastion is used to set up the application server]
     - Outbound All Traffic Anywhere
 - SSH via Bastion
-    - Create an ec2 instance with public IP
+    - Create an ec2 instance with public IP in the VPC
+    - Use public subnet
     - Security Group settings:
         - Inbound TCP 22 Source (Anywhere)
         - Outbound All Traffic Anywhere
