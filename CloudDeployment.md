@@ -52,6 +52,7 @@
     python manage.py migrate
     python manage.py runserver 0.0.0.0:8000
     ```
+- - Update .env and config.ini files with the relevant data
 - Systemd script:
     - sudo nano /etc/systemd/system/cookroo.service
     ```
@@ -83,11 +84,24 @@
     ```
     #!/bin/bash
     sudo -u ubuntu -i <<'EOF'
+    #!/bin/bash
     sudo apt-get update -y
     sudo apt install python3.12-venv -y
+
     python3 -m venv projectenv
     source projectenv/bin/activate
+
+    pip install awscli boto3
+
     git clone -q https://github.com/husainasad/CookRoo.git
+
+    aws s3 cp s3://your-bucket-name/.env /home/ubuntu/CookRoo/cookroo_backend/.env
+    aws s3 cp s3://your-bucket-name/config.ini /home/ubuntu/CookRoo/cookroo_backend/config.ini
+
+    RDS_ENDPOINT=$(aws rds --region us-east-1 describe-db-instances --db-instance-identifier cookroo-postgres --query "DBInstances[*].Endpoint.Address" --output text)
+
+    sed -i "s|url=.*|url=$RDS_ENDPOINT|" /home/ubuntu/CookRoo/cookroo_backend/config.ini
+
     pip install --upgrade pip
     pip install -r /home/ubuntu/CookRoo/cookroo_backend/requirements.txt
 
@@ -110,7 +124,7 @@
     Type=simple
     User=ubuntu
     WorkingDirectory=/home/ubuntu/CookRoo/cookroo_backend
-    ExecStart=/home/ubuntu/start_cookroo.sh
+    ExecStart=/home/ubuntu/setup_cookroo.sh
     Restart=always
     RestartSec=1
 
@@ -118,6 +132,7 @@
     WantedBy=multi-user.target" | sudo tee /etc/systemd/system/cookroo.service
 
     sudo chmod 644 /etc/systemd/system/cookroo.service
+    sudo systemctl daemon-reload
     sudo systemctl start cookroo.service
     sudo systemctl enable cookroo.service
     
